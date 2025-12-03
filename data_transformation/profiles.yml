@@ -1,0 +1,7 @@
+hr_analytics_profile:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "../duck_pond/hr_jobs.duckdb"
+      schema: mart

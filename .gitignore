@@ -205,3 +205,47 @@ cython_debug/
 marimo/_static/
 marimo/_lsp/
 __marimo__/
+
+dbt_packages/
+
+cloud/
+# Virtual enviroments
+
+venv/
+
+# Warehouse passwords
+
+setup_user.sql
+
+setup_user_reporter.sql
+
+.env
+
+
+**/ .tmp*/
+
+/ *duckdb
+
+dbt_packages
+
+**/logs/
+
+**/target/
+
+.tmp_dagster_home_2sptw57t
+
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.backup
+crash.log
+*.tfvars
+.terraformc
+terraform.rc
+
+
+.tmp*
+
+*.duckdb
+
+duck_pond/
