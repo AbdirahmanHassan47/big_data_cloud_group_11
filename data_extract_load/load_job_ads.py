@@ -1,14 +1,18 @@
 import dlt
 import requests
 import json
+from pathlib import Path
 
+# Gör så att staging-tratten töms vid varje körning
 dlt.config["load.truncate_staging_dataset"] = True
+
 
 def _get_ads(url_for_search, params):
     headers = {"accept": "application/json"}
     response = requests.get(url_for_search, headers=headers, params=params)
     response.raise_for_status()
     return json.loads(response.content.decode("utf8"))
+
 
 @dlt.resource(table_name="job_ads", write_disposition="replace")
 def jobsearch_resource(occupation_fields=None, base_query="", limit=100):
@@ -45,6 +49,7 @@ def jobsearch_resource(occupation_fields=None, base_query="", limit=100):
                 break
             offset += limit
 
+
 @dlt.source
 def jobads_source():
     return jobsearch_resource(
@@ -52,3 +57,33 @@ def jobads_source():
         base_query="",
         limit=100,
     )
+
+
+# 🔽🔽🔽 HÄR BÖRJAR DEN VIKTIGA DELEN 🔽🔽🔽
+
+# DuckDB-filen där vi vill skriva (samma som dbt använder: ../duck_pond/job_ads.duckdb)
+DUCKDB_PATH = Path(__file__).parents[1] / "duck_pond" / "job_ads.duckdb"
+
+
+def main():
+    print("🚀 Startar DLT-pipeline...")
+    print(f"➡ DuckDB-fil: {DUCKDB_PATH}")
+
+    pipeline = dlt.pipeline(
+        pipeline_name="job_ads_pipeline",
+        destination=dlt.destinations.duckdb(credentials=str(DUCKDB_PATH)),
+        dataset_name="staging",
+    )
+
+    print("📡 Hämtar annonser från jobtech-API...")
+    load_info = pipeline.run(
+        jobads_source(),
+        table_name="job_ads",  # hamnar som staging.job_ads
+    )
+
+    print("✅ Load completed.")
+    print(load_info)
+
+
+if __name__ == "__main__":
+    main()
