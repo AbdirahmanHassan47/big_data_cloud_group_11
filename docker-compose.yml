@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  hr-pipeline:
+    build:
+      context: .
+      dockerfile: dockerfile.dwh
+    image: abdiacr11.azurecr.io/hr-pipeline:latest 
+    ports:
+      - "3000:3000"
+
+  dashboard:
+    build:
+      context: .
+      dockerfile: dockerfile.dashboard
+    image: abdiacr11.azurecr.io/dashboard:latest 
+    ports:
+      - "8501:8501" 
