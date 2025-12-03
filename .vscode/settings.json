@@ -1,0 +1,12 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "DuckDB",
+            "name": "job_ads_local",
+            "group": "local",
+            "database": "${workspaceFolder:big_data_cloud_group_11}/duck_pond/job_ads.duckdb"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

@@ -1,7 +1,8 @@
-hr_analytics_profile:
+dbt_duckdb_docker_local:
   target: dev
   outputs:
     dev:
       type: duckdb
-      path: "../duck_pond/hr_jobs.duckdb"
-      schema: mart
+      path: ../duck_pond/job_ads.duckdb   # samma fil som dlt använder
+      schema: analytics
+      threads: 4
