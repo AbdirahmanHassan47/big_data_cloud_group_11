@@ -8,5 +8,6 @@
             "database": "${workspaceFolder:big_data_cloud_group_11}/duck_pond/job_ads.duckdb"
         }
     ],
-    "sqltools.useNodeRuntime": true
+    "sqltools.useNodeRuntime": true,
+    "dbt.perspectiveTheme": "Vintage"
 }

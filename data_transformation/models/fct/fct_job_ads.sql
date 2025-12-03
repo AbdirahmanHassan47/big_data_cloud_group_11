@@ -1,8 +1,21 @@
--- models/fct/fct_job_ads.sql
+with ja as (select * from {{ ref('src_job_ads') }}),
+     jd as (select * from {{ ref('src_job_details') }}),
+     e  as (select * from {{ ref('src_employer') }}),
+     a  as (select * from {{ ref('src_auxilliary_attributes') }}),
+     o  as (select * from {{ ref('src_occupation') }})
 
 select
-    cast(null as bigint) as job_details_id,
-    cast(null as bigint) as employer_id,
-    cast(null as bigint) as occupation_id,
-    cast(null as bigint) as auxilliary_attributes_id
-where 1 = 0
+    {{ dbt_utils.generate_surrogate_key(['jd.id', 'jd.headline']) }} as job_details_id,
+    {{ dbt_utils.generate_surrogate_key(['jd.id', 'e.employer_name']) }} as employer_id,
+    {{ dbt_utils.generate_surrogate_key(['jd.id', 'a.experience_required']) }} as auxilliary_attributes_id,
+    {{ dbt_utils.generate_surrogate_key(['jd.id', 'o.occupation']) }} as occupation_id,
+
+    vacancies,
+    relevance,
+    application_deadline
+
+from ja
+left join jd on ja.id = jd.id
+left join e  on ja.id = e.id
+left join a  on ja.id = a.id
+left join o  on ja.id = o.id
