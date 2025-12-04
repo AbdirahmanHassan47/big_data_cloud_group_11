@@ -1,12 +1,9 @@
 FROM python:3.11-slim
 
-# Kör allt från /app
 WORKDIR /app
 
-# Kopiera in hela projektet
 COPY . .
 
-# Installera Python-paket (lägg till fler om du behöver)
 RUN pip install --no-cache-dir \
     dagster \
     dagster-webserver \
@@ -17,14 +14,11 @@ RUN pip install --no-cache-dir \
     dlt \
     duckdb
 
-# Gör så att "import orchestration" fungerar
 ENV PYTHONPATH=/app
 
-# Standardväg till DuckDB-filen i containern
 ENV DUCKDB_PATH=/app/duck_pond/job_ads.duckdb
 ENV DBT_PROFILES_DIR=/app/data_transformation
 
 EXPOSE 3000
 
-# Starta Dagster med din definitions.py
 CMD ["dagster", "dev", "-h", "0.0.0.0", "-p", "3000", "-m", "orchestration.definitions"]

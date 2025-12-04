@@ -3,7 +3,7 @@ import requests
 import json
 from pathlib import Path
 
-# Gör så att staging-tratten töms vid varje körning
+
 dlt.config["load.truncate_staging_dataset"] = True
 
 
@@ -59,9 +59,6 @@ def jobads_source():
     )
 
 
-# 🔽🔽🔽 HÄR BÖRJAR DEN VIKTIGA DELEN 🔽🔽🔽
-
-# DuckDB-filen där vi vill skriva (samma som dbt använder: ../duck_pond/job_ads.duckdb)
 DUCKDB_PATH = Path(__file__).parents[1] / "duck_pond" / "job_ads.duckdb"
 
 
@@ -78,7 +75,7 @@ def main():
     print("📡 Hämtar annonser från jobtech-API...")
     load_info = pipeline.run(
         jobads_source(),
-        table_name="job_ads",  # hamnar som staging.job_ads
+        table_name="job_ads",  
     )
 
     print("✅ Load completed.")

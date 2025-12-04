@@ -1,10 +1,12 @@
+import os
 from pathlib import Path
 import duckdb
 
-# Pekar på DuckDB-filen i projektroten: duck_pond/job_ads.duckdb
-FILES_SHARE_PATH = (
-    Path(__file__).resolve().parents[1] / "duck_pond" / "job_ads.duckdb"
+FILES_SHARE_PATH = os.getenv(
+    "DUCKDB_PATH",
+    str(Path(__file__).resolve().parents[1] / "duck_pond" / "job_ads.duckdb")
 )
+
 
 def query_job_listings(query: str):
     """

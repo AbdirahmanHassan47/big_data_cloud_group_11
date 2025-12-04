@@ -3,6 +3,6 @@ dbt_duckdb_docker_local:
   outputs:
     dev:
       type: duckdb
-      path: ../duck_pond/job_ads.duckdb   # samma fil som dlt använder
+      path: ../duck_pond/job_ads.duckdb   
       schema: analytics
       threads: 4

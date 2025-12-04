@@ -1,0 +1,17 @@
+dbt_duckdb_docker:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH') }}"
+      schema: main
+      threads: 4
+
+dbt_duckdb_docker_local:
+  target: dev
+  outputs:
+    dev:
+      type: duckdb
+      path: "{{ env_var('DUCKDB_PATH') }}"
+      schema: main
+      threads: 4

@@ -1,9 +1,21 @@
 FROM python:3.11-slim
 
-WORKDIR /app/dashboard
+WORKDIR /app
+
 
 COPY dashboard/ /app/dashboard/
 
-RUN pip install streamlit duckdb pandas plotly python-dotenv
+
+COPY duck_pond/job_ads.duckdb /app/duck_pond/job_ads.duckdb
+
+
+RUN pip install --no-cache-dir streamlit duckdb pandas plotly python-dotenv
+
+
+ENV FILES_SHARE_PATH=/app/duck_pond/job_ads.duckdb
+
+WORKDIR /app/dashboard
+
+EXPOSE 8501
 
 CMD ["streamlit", "run", "dashboard.py", "--server.port=8501", "--server.address=0.0.0.0"]
