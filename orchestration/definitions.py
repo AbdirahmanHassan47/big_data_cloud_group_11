@@ -1,10 +1,3 @@
-# ==================== #
-#                      #
-#       imports        #
-#                      #
-# ==================== #
-# this file is used for running dagster locally
-# this file is loaded directly as code location
 
 from pathlib import Path
 import os
@@ -15,33 +8,20 @@ import dagster as dg
 from dagster_dlt import DagsterDltResource, dlt_assets
 from dagster_dbt import DbtCliResource, DbtProject, dbt_assets
 
-# ==================== #
-#                      #
-#   paths & settings   #
-# ==================== #
 
-# repo root: .../big_data_cloud_group_11
 REPO_ROOT = Path(__file__).resolve().parents[1]
 
-# data_extract_load på import-sökvägen
-sys.path.insert(0, str(REPO_ROOT / "data_extract_load"))
-from load_job_ads import jobads_source  # noqa: E402
 
-# DuckDB-fil: samma som i load_job_ads.py / profiles.yml
+sys.path.insert(0, str(REPO_ROOT / "data_extract_load"))
+from load_job_ads import jobads_source 
+
 DEFAULT_DUCKDB_PATH = REPO_ROOT / "duck_pond" / "job_ads.duckdb"
 DUCKDB_PATH = os.getenv("DUCKDB_PATH", str(DEFAULT_DUCKDB_PATH))
 
-# dbt-projekt-mapp
 dbt_project_directory = REPO_ROOT / "data_transformation"
 
-# profiles.yml ligger i data_transformation/
 DBT_PROFILES_DIR = os.getenv("DBT_PROFILES_DIR", str(dbt_project_directory))
 
-# ==================== #
-#                      #
-#       dlt Asset      #
-#                      #
-# ==================== #
 
 dlt_resource = DagsterDltResource()
 
@@ -60,37 +40,22 @@ def dlt_load(context: dg.AssetExecutionContext, dlt: DagsterDltResource):
     yield from dlt.run(context=context)
 
 
-# ==================== #
-#                      #
-#       dbt Asset      #
-#                      #
-# ==================== #
-# this dbt asset needs dbt_packages pre-installed by 'dbt deps'
-
 dbt_project = DbtProject(
     project_dir=dbt_project_directory,
     profiles_dir=DBT_PROFILES_DIR,
 )
 
-# References the dbt project object
 dbt_resource = DbtCliResource(project_dir=dbt_project)
 
-# Compiles the dbt project & allow Dagster to build an asset graph
 dbt_project.prepare_if_dev()
 
 
-# Yields Dagster events streamed from the dbt CLI
 @dbt_assets(manifest=dbt_project.manifest_path)
 def dbt_models(context: dg.AssetExecutionContext, dbt: DbtCliResource):
     """Kör dbt build och exponerar modeller som Dagster-assets."""
     yield from dbt.cli(["build"], context=context).stream()
 
 
-# ==================== #
-#                      #
-#         Job          #
-#                      #
-# ==================== #
 
 job_dlt = dg.define_asset_job(
     "job_dlt",
@@ -103,12 +68,6 @@ job_dbt = dg.define_asset_job(
 )
 
 
-# ==================== #
-#                      #
-#       Schedule       #
-#                      #
-# ==================== #
-
 schedule_dlt = dg.ScheduleDefinition(
     name="job_dlt_schedule",
     job=job_dlt,
@@ -117,23 +76,12 @@ schedule_dlt = dg.ScheduleDefinition(
 )
 
 
-# ==================== #
-#                      #
-#        Sensor        #
-#                      #
-# ==================== #
-
 @dg.asset_sensor(asset_key=dg.AssetKey("dlt_jobads_source_jobsearch_resource"), job_name="job_dbt")
 def dlt_load_sensor():
     """Triggar dbt-jobbet när dlt-asseten uppdateras."""
     yield dg.RunRequest()
 
 
-# ==================== #
-#                      #
-#     Definitions      #
-#                      #
-# ==================== #
 
 defs = dg.Definitions(
     assets=[dlt_load, dbt_models],

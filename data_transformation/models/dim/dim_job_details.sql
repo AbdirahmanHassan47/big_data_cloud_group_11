@@ -12,6 +12,3 @@ select
     scope_of_work_max
 from src_job_details
 
--- Manual testing
-
-{# where job_details_id = '5e0e43114db00b59a6d76f7ed53d3ebb' #}
