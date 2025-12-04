@@ -249,3 +249,5 @@ terraform.rc
 *.duckdb
 
 duck_pond/
+
+.vscode/
