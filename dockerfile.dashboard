@@ -2,15 +2,12 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-
 COPY dashboard/ /app/dashboard/
 
-
-COPY duck_pond/job_ads.duckdb /app/duck_pond/job_ads.duckdb
-
+# Create folder for DuckDB file (it will be created/updated at runtime)
+RUN mkdir -p /app/duck_pond
 
 RUN pip install --no-cache-dir streamlit duckdb pandas plotly python-dotenv
-
 
 ENV FILES_SHARE_PATH=/app/duck_pond/job_ads.duckdb
 
