@@ -27,4 +27,5 @@ jobs:
           context: .
           file: dockerfile.dashboard
           push: true
-          tags: ghcr.io/${{ github.repository_owner }}/bigdata-g11-dashboard:latest
+          tags: ghcr.io/abdirahmanhassan47/bigdata-g11-dashboard:latest
+
